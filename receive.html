@@ -2,9 +2,9 @@
 <html>
     <head>
         <meta charset="utf-8" />
-        <meta name="viewport" content="width=device-width">
+        <meta name="viewport" content="width=device-width" />
         <title>Peer-to-Peer Cue System --- Reciever</title>
-        <link rel="stylesheet" href="style.css">
+        <link rel="stylesheet" href="style.css" />
     </head>
     <body>
         <table class="display">
@@ -14,7 +14,9 @@
             </tr>
             <tr>
                 <td>
-                    <div id="receiver-id" style="font-weight: bold;" title="Copy this ID to the input on send.html.">ID:</div>
+                    <div id="receiver-id" style="font-weight: bold" title="Copy this ID to the input on send.html.">
+                        ID:
+                    </div>
                 </td>
                 <td>
                     <input type="text" id="sendMessageBox" placeholder="Enter a message..." autofocus="true" />
@@ -39,21 +41,20 @@
         <script src="https://unpkg.com/peerjs@1.3.1/dist/peerjs.min.js"></script>
         <script type="text/javascript">
             (function () {
-
                 var lastPeerId = null;
                 var peer = null; // Own peer object
                 var peerId = null;
                 var conn = null;
-                var recvId = document.getElementById("receiver-id");
-                var status = document.getElementById("status");
-                var message = document.getElementById("message");
-                var standbyBox = document.getElementById("standby");
-                var goBox = document.getElementById("go");
-                var fadeBox = document.getElementById("fade");
-                var offBox = document.getElementById("off");
-                var sendMessageBox = document.getElementById("sendMessageBox");
-                var sendButton = document.getElementById("sendButton");
-                var clearMsgsButton = document.getElementById("clearMsgsButton");
+                var recvId = document.getElementById('receiver-id');
+                var status = document.getElementById('status');
+                var message = document.getElementById('message');
+                var standbyBox = document.getElementById('standby');
+                var goBox = document.getElementById('go');
+                var fadeBox = document.getElementById('fade');
+                var offBox = document.getElementById('off');
+                var sendMessageBox = document.getElementById('sendMessageBox');
+                var sendButton = document.getElementById('sendButton');
+                var clearMsgsButton = document.getElementById('clearMsgsButton');
 
                 /**
                  * Create the Peer object for our end of the connection.
@@ -61,12 +62,18 @@
                  * Sets up callbacks that handle any events related to our
                  * peer object.
                  */
-                 function initialize() {
+                function initialize() {
                     // Create own peer object with connection to shared PeerJS server
-                    peer = new Peer(null, {
-                        debug: 2
+                    // peer = new Peer(null, {
+                    //     debug: 2,
+                    // });
+
+                    peer = new Peer({
+                        host: 'localhost',
+                        port: 8080,
+                        path: '/peer/server',
                     });
-                    
+
                     // peer = new Peer({
                     //     host: '172.20.10.7',
                     //     port: 8080,
@@ -83,8 +90,8 @@
                         // }
 
                         console.log('ID: ' + peer.id);
-                        recvId.innerHTML = "ID: " + peer.id;
-                        status.innerHTML = "Awaiting connection...";
+                        recvId.innerHTML = 'ID: ' + peer.id;
+                        status.innerHTML = 'Awaiting connection...';
                     });
                     peer.on('connection', function (c) {
                         // Allow only a single connection
@@ -97,29 +104,29 @@
                         // }
 
                         conn = c;
-                        console.log("Connected to: " + conn.peer);
-                        status.innerHTML = "Connected";
+                        console.log('Connected to: ' + conn.peer);
+                        status.innerHTML = 'Connected';
                         ready();
                     });
                     peer.on('disconnected', function () {
-                        status.innerHTML = "Connection lost. Please reconnect";
+                        status.innerHTML = 'Connection lost. Please reconnect';
                         console.log('Connection lost. Please reconnect');
 
-                        // Workaround for peer.reconnect deleting previous id
-                        peer.id = lastPeerId;
-                        peer._lastServerId = lastPeerId;
-                        peer.reconnect();
+                        // // Workaround for peer.reconnect deleting previous id
+                        // peer.id = lastPeerId;
+                        // peer._lastServerId = lastPeerId;
+                        // peer.reconnect();
                     });
-                    peer.on('close', function() {
+                    peer.on('close', function () {
                         conn = null;
-                        status.innerHTML = "Connection destroyed. Please refresh";
+                        status.innerHTML = 'Connection destroyed. Please refresh';
                         console.log('Connection destroyed');
                     });
                     peer.on('error', function (err) {
                         console.log(err);
-                        alert('' + err);
+                        // alert('' + err);
                     });
-                };
+                }
 
                 /**
                  * Triggered once a connection has been achieved.
@@ -127,8 +134,8 @@
                  */
                 function ready() {
                     conn.on('data', function (data) {
-                        console.log("Data recieved");
-                        var cueString = "<span class=\"cueMsg\">Cue: </span>";
+                        console.log('Data recieved');
+                        var cueString = '<span class="cueMsg">Cue: </span>';
                         switch (data) {
                             case 'Go':
                                 go();
@@ -147,47 +154,48 @@
                                 addMessage(cueString + data);
                                 break;
                             default:
-                                addMessage("<span class=\"peerMsg\">Peer: </span>" + data);
+                                console.log(JSON.parse(data));
+                                addMessage('<span class="peerMsg">Peer: </span>' + data);
                                 break;
-                        };
+                        }
                     });
                     conn.on('close', function () {
-                        status.innerHTML = "Connection reset<br>Awaiting connection...";
+                        status.innerHTML = 'Connection reset<br>Awaiting connection...';
                         conn = null;
                     });
                 }
 
                 function go() {
-                    standbyBox.className = "display-box hidden";
-                    goBox.className = "display-box go";
-                    fadeBox.className = "display-box hidden";
-                    offBox.className = "display-box hidden";
+                    standbyBox.className = 'display-box hidden';
+                    goBox.className = 'display-box go';
+                    fadeBox.className = 'display-box hidden';
+                    offBox.className = 'display-box hidden';
                     return;
-                };
+                }
 
                 function fade() {
-                    standbyBox.className = "display-box hidden";
-                    goBox.className = "display-box hidden";
-                    fadeBox.className = "display-box fade";
-                    offBox.className = "display-box hidden";
+                    standbyBox.className = 'display-box hidden';
+                    goBox.className = 'display-box hidden';
+                    fadeBox.className = 'display-box fade';
+                    offBox.className = 'display-box hidden';
                     return;
-                };
+                }
 
                 function off() {
-                    standbyBox.className = "display-box hidden";
-                    goBox.className = "display-box hidden";
-                    fadeBox.className = "display-box hidden";
-                    offBox.className = "display-box off";
+                    standbyBox.className = 'display-box hidden';
+                    goBox.className = 'display-box hidden';
+                    fadeBox.className = 'display-box hidden';
+                    offBox.className = 'display-box off';
                     return;
                 }
 
                 function reset() {
-                    standbyBox.className = "display-box standby";
-                    goBox.className = "display-box hidden";
-                    fadeBox.className = "display-box hidden";
-                    offBox.className = "display-box hidden";
+                    standbyBox.className = 'display-box standby';
+                    goBox.className = 'display-box hidden';
+                    fadeBox.className = 'display-box hidden';
+                    offBox.className = 'display-box hidden';
                     return;
-                };
+                }
 
                 function addMessage(msg) {
                     var now = new Date();
@@ -195,40 +203,49 @@
                     var m = addZero(now.getMinutes());
                     var s = addZero(now.getSeconds());
 
-                    if (h > 12)
-                        h -= 12;
-                    else if (h === 0)
-                        h = 12;
+                    if (h > 12) h -= 12;
+                    else if (h === 0) h = 12;
 
                     function addZero(t) {
-                        if (t < 10)
-                            t = "0" + t;
+                        if (t < 10) t = '0' + t;
                         return t;
-                    };
+                    }
 
-                    message.innerHTML = "<br><span class=\"msg-time\">" + h + ":" + m + ":" + s + "</span>  -  " + msg + message.innerHTML;
+                    message.innerHTML =
+                        '<br><span class="msg-time">' +
+                        h +
+                        ':' +
+                        m +
+                        ':' +
+                        s +
+                        '</span>  -  ' +
+                        msg +
+                        message.innerHTML;
                 }
 
                 function clearMessages() {
-                    message.innerHTML = "";
-                    addMessage("Msgs cleared");
+                    message.innerHTML = '';
+                    addMessage('Msgs cleared');
                 }
 
                 // Listen for enter in message box
                 sendMessageBox.addEventListener('keypress', function (e) {
                     var event = e || window.event;
                     var char = event.which || event.keyCode;
-                    if (char == '13')
-                        sendButton.click();
+                    if (char == '13') sendButton.click();
                 });
                 // Send message
                 sendButton.addEventListener('click', function () {
                     if (conn && conn.open) {
                         var msg = sendMessageBox.value;
-                        sendMessageBox.value = "";
-                        conn.send(msg);
-                        console.log("Sent: " + msg)
-                        addMessage("<span class=\"selfMsg\">Self: </span>" + msg);
+                        var jsonMsg = JSON.stringify({ message: msg });
+                        sendMessageBox.value = '';
+                        conn.send(jsonMsg);
+                        // console.log(jsonMsg);
+                        console.log('Sent: ' + msg);
+                        console.log('valid', JSON.parse(jsonMsg));
+                        console.log('invalid', JSON.parse('not a json'));
+                        addMessage('<span class="selfMsg">Self: </span>' + jsonMsg);
                     } else {
                         console.log('Connection is closed');
                     }
