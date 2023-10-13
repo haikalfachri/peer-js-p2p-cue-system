@@ -83,7 +83,6 @@
                     // peer = new Peer(null, {
                     //     debug: 2,
                     // });
-
                     peer = new Peer({
                         host: 'localhost',
                         port: 8080,
@@ -271,11 +270,9 @@
                     conn.forEach((item) => {
                         if (item && item.open) {
                             item.send(jsonMsg);
-                            // console.log(jsonMsg);
                             console.log('Sent: ' + msg);
                             console.log('valid', JSON.parse(jsonMsg));
-                            exampleSocket.send(jsonMsg);
-                            // console.log('invalid', JSON.parse('not a json'));
+                            ws.send(jsonMsg);
                         } else {
                             console.log('Connection is closed');
                         }
@@ -299,10 +296,13 @@
                 // Start peer connection on click
                 connectButton.addEventListener('click', join);
 
+                const ws = new WebSocket('ws://localhost:8083');
                 // Since all our callbacks are setup, start the process of obtaining an ID
-                const exampleSocket = new WebSocket('ws://localhost:8081');
                 initialize();
 
+                ws.onmessage = (event) => {
+                    console.log('from server: ', event.data);
+                };
                 // Setup ws
             })();
         </script>

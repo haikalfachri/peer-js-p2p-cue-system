@@ -14,9 +14,12 @@
             </tr>
             <tr>
                 <td>
-                    <div id="receiver-id" style="font-weight: bold" title="Copy this ID to the input on send.html.">
-                        ID:
-                    </div>
+                    <p style="font-weight: bold">ID:</p>
+                    <div
+                        id="receiver-id"
+                        style="font-weight: bold"
+                        title="Copy this ID to the input on send.html."
+                    ></div>
                 </td>
                 <td>
                     <input type="text" id="sendMessageBox" placeholder="Enter a message..." autofocus="true" />
@@ -90,7 +93,7 @@
                         // }
 
                         console.log('ID: ' + peer.id);
-                        recvId.innerHTML = 'ID: ' + peer.id;
+                        recvId.innerHTML = peer.id;
                         status.innerHTML = 'Awaiting connection...';
                     });
                     peer.on('connection', function (c) {
